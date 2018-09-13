@@ -1,4 +1,4 @@
-# **This is a plug-in based of easyui.** 
+# **This is a plug-in based of easyui.**
 
 This is a plug-in based of easyui, This plug-in can export datagrid to Excel, The effect is what you see is what you get, not only contains data but also contains styles, contains the style of easyui itself and user defined.
 ---
