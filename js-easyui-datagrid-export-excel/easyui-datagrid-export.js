@@ -1,3 +1,12 @@
+/**
+ * export datagrid to excel. what you see is what you get. 
+ * based on jquery easyui.
+ * use demo: $("#table").datagrid("toExcel",excel_name || param)
+ *
+ * 所见即所得，将所见的datagrid导成excel
+ * 依赖jquery easyui
+ * 调用：$("#table").datagrid("toExcel",excel_name || param)
+ */
 (function($){
     function getRows(target){
         var state = $(target).data('datagrid');
@@ -16,54 +25,20 @@
         var trStyle = 'height:32px';
         var tdStyle0 = 'vertical-align:middle;padding:0 4px';
         
-        var frozen_columns_head = dg.datagrid("options").frozenColumns;
-        var columns_head = dg.datagrid("options").columns;
-        
-        var getColumnMaxRowspan = function(columns_head) {
-        	var max_rowspan = 0;
-        	for(var i in columns_head) {
-        		var columns = columns_head[i];
-        			var rowspan = columns[0].rowspan;
-        			if(rowspan > 1) {
-        				max_rowspan += rowspan;
-        			}else {
-        				max_rowspan += 1;
-        			}
-        	}
-        	return max_rowspan;
-        }
-        
-//        var columnMaxRowspan = getColumnMaxRowspan(columns_head);
-        
         var column_stylers = new Object();
-        var setColumns = function(frozen_columns_head, columns_head) {
-        	for(var i in columns_head) {
-        		var frozen_columns = frozen_columns_head[i];
-	        	var columns = columns_head[i];
-	        	
-	        	data.push('<tr style="'+trStyle+'">');
-	        	var setColumn = function(columns, is_frozen) {
-	        		for(var i in columns) {
-		        		var column = columns[i];
-		        		var h_rowsapn = column.rowspan;
-		        		if(column.frowspan) {
-		        			h_rowsapn = column.frowspan;
-		        		}
-//		        		else if(is_frozen) {
-//		        			h_rowsapn = columnMaxRowspan;
-//		        		}
-		        		var tdStyle = tdStyle0 + ';width:'+column.boxWidth+'px;';
-		        		data.push('<th rowspan="'+h_rowsapn+'" colspan="'+column.colspan+'" style="'+tdStyle+'">'
-		        				+column.title+'</th>');
-		        		column_stylers[column.field] = column.styler; // 取出调用者自定义的列style
-	        		}
-	        	}
-	        	if(frozen_columns){setColumn(frozen_columns, true);}
-	        	setColumn(columns);
-	        	data.push('</tr>');
-        	}
+        var columns_head = dg.datagrid("options").columns;
+        for(var i in columns_head) { // 列头可能有多行
+        	var columns = columns_head[i];
+        	data.push('<tr style="'+trStyle+'">');
+        	for(var i in columns) {
+        		var column = columns[i];
+        		var tdStyle = tdStyle0 + ';width:'+column.boxWidth+'px;';
+        		data.push('<th rowspan="'+column.rowspan+'" colspan="'+column.colspan+'" style="'+tdStyle+'">'
+        				+column.title+'</th>');
+        		column_stylers[column.field] = column.styler; // 取出调用者自定义的列style
+            }
+        	data.push('</tr>');
         }
-        setColumns(frozen_columns_head, columns_head);
         
         var index = 0;
         $.map(rows, function(row){
